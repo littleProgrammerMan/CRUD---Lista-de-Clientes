@@ -5,7 +5,7 @@ const InputForm = ({ label, name, ...rest }) => {
     <>
       <FormControl marginY="1rem">
         <FormLabel>{label}</FormLabel>
-        <Input type="text" name={name} id={name} {...rest} />
+        <Input name={name} id={name} {...rest} />
       </FormControl>
     </>
   );

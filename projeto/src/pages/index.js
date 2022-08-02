@@ -1,27 +1,68 @@
-import { Button, VStack } from "@chakra-ui/react";
+import { useState } from "react";
 import {
+  VStack,
+  Button,
   Flex,
   Text,
   Box,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  Input,
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
-  HStack,
 } from "@chakra-ui/react";
 
-import InputForm from '../components/input/';
+import InputForm from "../components/input/";
 
 export default function Home() {
+  const [id, setId] = useState(null);
+
+  const [clients, setClients] = useState([]);
+
+  const [name, setName] = useState("");
+
+  const [email, setEmail] = useState("");
+
+  const handleSubmitCreateClient = (e) => {
+    e.preventDefault();
+    if (!name && email) return;
+
+    setClients(clients.concat({ id: new Date().getMilliseconds().toString(), name, email }));
+
+    setName("");
+    setEmail("");
+  };
+
+  const handleSubmitUpdateClient = (e) => {
+    e.preventDefault();
+    if (!name && email) return;
+
+    setClients(clients.map(client => client.id === id ? {name, aemail, id: id} : client));
+
+    setName("");
+    setEmail("");
+  };
+
+  const handleDeleteClient = (id) => {
+    setClients(clients.filter(client => client.id !== id))
+  }
+
+  const handleChangeName = (text) => {
+    setName(text);
+  };
+
+  const handleChangeEmail = (text) => {
+    setEmail(text);
+  };  
+
+  const handleShowUpdateClientForm = (client) => {
+    setId(client.id);
+    setName(client.name);
+    setEmail(client.email);
+  }
+
   return (
     <Box margin="4">
       <Flex color="white" justifyContent="space-between">
@@ -32,11 +73,28 @@ export default function Home() {
         <Button colorScheme="blue">+</Button>
       </Flex>
 
-      <VStack marginY="1rem">
-        <InputForm name="name" label="Nome"/>
-        <InputForm name="email" label="Email" type="email"/>
-        <Button fontSize="sm" alignSelf="flex-end" colorScheme="blue">
-          Cadastro
+      <VStack marginY="1rem" as="form" onSubmit={id ? handleSubmitUpdateClient : handleSubmitCreateClient}>
+        <InputForm
+          name="name"
+          label="Nome"
+          value={name}
+          type="text"
+          onChange={(e) => handleChangeName(e.target.value)}
+        />
+        <InputForm
+          name="email"
+          label="Email"
+          value={email}
+          type="email"
+          onChange={(e) => handleChangeEmail(e.target.value)}
+        />
+        <Button
+          fontSize="sm"
+          alignSelf="flex-end"
+          colorScheme="blue"
+          type="submit"
+        >
+          {id ? 'Atualizar' : 'Cadastrar'}
         </Button>
       </VStack>
 
@@ -50,20 +108,22 @@ export default function Home() {
             </Tr>
           </Thead>
           <Tbody>
-            <Tr>
-              <Td>Victor FullStack Dev</Td>
-              <Td>vitinhobc.work@gmail.com</Td>
-              <Td>
-                <Flex justifyContent="space-between">
-                  <Button size="sm" fontSize="smaller" colorScheme="yellow">
-                    Editar
-                  </Button>
-                  <Button size="sm" fontSize="smaller" colorScheme="red">
-                    Remover
-                  </Button>
-                </Flex>
-              </Td>
-            </Tr>
+            {clients.map((client) => (
+              <Tr key={clients.email}>
+                <Td>{client.name}</Td>
+                <Td>{client.email}</Td>
+                <Td>
+                  <Flex justifyContent="space-between">
+                    <Button size="sm" fontSize="smaller" colorScheme="yellow" onClick={() => handleShowUpdateClientForm(client)}>
+                      Editar
+                    </Button>
+                    <Button size="sm" fontSize="smaller" colorScheme="red" onClick={() => handleDeleteClient(client.id)}>
+                      Remover
+                    </Button>
+                  </Flex>
+                </Td>
+              </Tr>
+            ))}
           </Tbody>
         </Table>
       </TableContainer>
