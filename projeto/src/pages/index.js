@@ -52,7 +52,7 @@ export default function Home() {
   const handleSubmitCreateClient = (e) => {
     e.preventDefault();
 
-    if(!isValidFormData) return;
+    if(!isValidFormData()) return;
 
     setClients(
       clients.concat({
@@ -70,7 +70,7 @@ export default function Home() {
   const handleSubmitUpdateClient = (e) => {
     e.preventDefault();
     
-    if(!isValidFormData) return;
+    if(!isValidFormData()) return;
 
     setClients(
       clients.map((client) =>
@@ -124,19 +124,18 @@ export default function Home() {
           onSubmit={id ? handleSubmitUpdateClient : handleSubmitCreateClient}
         >
           <InputForm
-            name="name"
             label="Nome"
+            name="name"
             value={name}
-            type="text"
-            onChange={(e) => handleChangeName(e.target.value)}
+            onChange={e => handleChangeName(e.target.value)}
             error={errors.name}
           />
           <InputForm
-            name="email"
             label="Email"
-            value={email}
+            name="email"
             type="email"
-            onChange={(e) => handleChangeEmail(e.target.value)}
+            value={email}
+            onChange={e => handleChangeEmail(e.target.value)}
             error={errors.email}
           />
           <Button
