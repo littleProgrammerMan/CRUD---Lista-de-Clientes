@@ -10,5 +10,8 @@ node_modules
 # Ignore arquivos relacionados às chaves de API
 .env
 
+# Ignore arquivos relacionados às chaves de API
+.env.local
+
 # Ignore arquivos de configuração de SASS
 .sass-cache

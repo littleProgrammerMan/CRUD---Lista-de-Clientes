@@ -27,50 +27,57 @@ export default function Home() {
 
   const [email, setEmail] = useState("");
 
-  const [errors, setErrors] = useState({name: null, email: null});
+  const [errors, setErrors] = useState({ name: null, email: null });
 
   const isValidFormData = () => {
     if (!name) {
-      setErrors({name: "Name is required"})
-      return false;
-    }
-    
-    if (!email) {
-      setErrors({email: "Email is required"})
+      setErrors({ name: "Name is required" });
       return false;
     }
 
-    if(clients.some(client => client.email === email && client.id !== id)) {
-      setErrors({email: "Email already in use"})
-      return
+    if (!email) {
+      setErrors({ email: "Email is required" });
+      return false;
+    }
+
+    if (clients.some((client) => client.email === email && client.id !== id)) {
+      setErrors({ email: "Email already in use" });
+      return;
     }
 
     setErrors({});
     return true;
-  }
+  };
 
-  const handleSubmitCreateClient = (e) => {
+  const handleSubmitCreateClient = async (e) => {
     e.preventDefault();
 
-    if(!isValidFormData()) return;
+    if (!isValidFormData()) return;
 
-    setClients(
-      clients.concat({
-        id: new Date().getMilliseconds().toString(),
-        name,
-        email,
-      })
-    );
+    try {
+      const response = await api.post('/clients', {name, email})
 
-    setName("");
-    setEmail("");
-    toggleFormState();
+      console.log(response);
+
+      // setClients(
+      //   clients.concat({
+      //     name,
+      //     email,
+      //   })
+      // );
+
+      // setName("");
+      // setEmail("");
+      // toggleFormState();
+    } catch (err) {
+      console.log();
+    }
   };
 
   const handleSubmitUpdateClient = (e) => {
     e.preventDefault();
-    
-    if(!isValidFormData()) return;
+
+    if (!isValidFormData()) return;
 
     setClients(
       clients.map((client) =>
@@ -105,7 +112,7 @@ export default function Home() {
 
   const toggleFormState = () => {
     setIsFormOpen(!isFormOpen);
-  }
+  };
 
   return (
     <Box margin="4">
@@ -114,7 +121,9 @@ export default function Home() {
           Lista de Clientes
         </Text>
 
-        <Button colorScheme="blue" onClick={toggleFormState}>{isFormOpen ? "-" : "+"}</Button>
+        <Button colorScheme="blue" onClick={toggleFormState}>
+          {isFormOpen ? "-" : "+"}
+        </Button>
       </Flex>
 
       {isFormOpen && (
@@ -127,7 +136,7 @@ export default function Home() {
             label="Nome"
             name="name"
             value={name}
-            onChange={e => handleChangeName(e.target.value)}
+            onChange={(e) => handleChangeName(e.target.value)}
             error={errors.name}
           />
           <InputForm
@@ -135,7 +144,7 @@ export default function Home() {
             name="email"
             type="email"
             value={email}
-            onChange={e => handleChangeEmail(e.target.value)}
+            onChange={(e) => handleChangeEmail(e.target.value)}
             error={errors.email}
           />
           <Button
